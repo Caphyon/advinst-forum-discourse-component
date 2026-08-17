@@ -1,0 +1,50 @@
+# The category to redirect "/" to and to treat as the forum-index page
+# (see homepage-category.js / body.ai-forum-index in common.scss).
+#
+# Discourse has no plain "pick one category" setting type, so this uses the
+# same "objects + categories schema field" trick as official components like
+# discourse-category-banners. In JS the value comes back as
+# `[{ category_id: [123] }]` — an array of objects, each holding an array of
+# ids — even though `validations: max: 1` limits it to a single category.
+homepage_category:
+  type: objects
+  default: []
+  schema:
+    name: homepage_category
+    identifier: category_id
+    properties:
+      category_id:
+        type: categories
+        required: true
+        validations:
+          max: 1
+
+# Master on/off switch for the Author column added to the topic list
+# (author-column.js / author-column-*.gjs). Also gates the SCSS block that
+# hides Discourse's default contributor-avatars ("posters") column, via the
+# `$author_column_enabled` SCSS variable Discourse injects for bool settings.
+author_column_enabled:
+  default: true
+  type: bool
+
+# What the Author column shows.
+author_column_display:
+  default: avatar_and_username
+  type: enum
+  choices:
+    - avatar_and_username
+    - avatar_only
+    - username_only
+
+# Where the Author column sits relative to the other topic-list columns.
+# "center" = phpBB order (Topic, Author, Replies, Views, Last post).
+# `refresh: true` because changing this needs the topic-list-columns
+# transformer (registered once at init) to re-run with the new position.
+author_column_position:
+  default: center
+  type: enum
+  refresh: true
+  choices:
+    - left
+    - center
+    - right

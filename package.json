@@ -1,0 +1,12 @@
+{
+  "name": "category-table-view",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Discourse theme component: phpBB-style subcategory table view",
+  "scripts": {
+    "zip": "node scripts/build-zip.js"
+  },
+  "devDependencies": {
+    "archiver": "7.0.1"
+  }
+}

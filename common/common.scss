@@ -1,0 +1,120 @@
+// Table-style subcategory list, phpBB-like layout
+.category-list.with-topics {
+  border-collapse: collapse;
+  width: 100%;
+
+  > thead {
+    background: #060813;
+
+    th {
+      color: #fff;
+      font-weight: bold;
+      padding: 0.75em 1em;
+      text-align: left;
+
+      &.topics,
+      &.posts,
+      &.latest {
+        text-align: center;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  > tbody {
+    tr {
+      border-bottom: 1px solid var(--primary-low);
+
+      &:nth-child(even) {
+        background: var(--primary-very-low);
+      }
+    }
+
+    td {
+      padding: 0.75em 1em;
+      vertical-align: middle;
+
+      &.topics,
+      &.posts {
+        text-align: center;
+      }
+    }
+  }
+}
+
+.last-post-author {
+  white-space: nowrap;
+  font-size: var(--font-down-1);
+  color: var(--primary-medium);
+}
+
+// "Author" column added to the main topic list (category/latest/top pages).
+// Registered by author-column.js via the topic-list-columns value
+// transformer (desktop) and plugin outlets (mobile).
+.topic-list {
+  th.author,
+  td.author {
+    text-align: left;
+    white-space: nowrap;
+    // Without this, td.author falls back to the browser default
+    // (top/baseline), while core's other cells are middle-aligned — visibly
+    // mismatched next to a wrapped, multi-line topic title.
+    vertical-align: middle;
+  }
+
+  // Bare text in a <th> keeps the browser's default bold/larger UA style —
+  // core's other header cells reset this via their <button>/<span> wrapper,
+  // so match their font here instead of inheriting the raw <th> default.
+  th.author {
+    font-weight: normal;
+    font-size: var(--d-topic-list-header-font-size, var(--font-down-1));
+    color: var(--d-topic-list-header-text-color, var(--primary-medium));
+  }
+
+  td.author .author-column-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    color: inherit;
+  }
+
+  td.author .author-column-username {
+    font-size: var(--font-down-1);
+  }
+
+  // $author_column_enabled is a SCSS variable Discourse auto-generates from
+  // the bool setting of the same name — no import needed, it's just there.
+  @if $author_column_enabled {
+    // Our Author column replaces Discourse's default contributor-avatars
+    // ("posters") column — hide it to avoid showing the same info twice.
+    // (Same technique the official discourse-topic-list-author component
+    // uses for its own avatar column.)
+    .posters {
+      display: none;
+    }
+  }
+}
+
+// Mobile only: the content component renders inside a card, not a table
+// cell — undo the <td> box model so it lays out like the other mobile
+// outlets. Scoped to the outlet wrapper class specifically (NOT
+// ".topic-list-item .author", which also matches the desktop <td class="author">
+// — that was breaking table-cell layout on desktop, causing the row-height
+// mismatch/misalignment).
+.topic-list-item-mobile-avatar-outlet .author,
+.topic-list-item-mobile-avatar {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0 !important;
+}
+
+// Hide the topic list below the subcategory board on the configured
+// homepage category's page — we only want the subcategory table, not the
+// topic list. Toggled by homepage-category.js based on the `homepage_category`
+// setting, not a hardcoded slug.
+body.ai-forum-index {
+  #list-area {
+    display: none;
+  }
+}
